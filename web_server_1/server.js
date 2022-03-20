@@ -32,6 +32,11 @@ app.get('/byebye',
         res.send('<h1>Bye bye World</h1>')
     }
 )
+app.get('/customer_search_form',
+    function (req, res) {
+        res.sendFile(path.join(__dirname, 'public_html', 'form_customer.html'))
+    }
+)
 
 /* POST form processing **********************************************************/
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -107,7 +112,74 @@ app.get('/seasons', function (req, res) {
     pageData.content += '</table>'
     res.render('season.ejs', pageData)
 })
+// ------------------
 
+const DB = require('./src/logger/dao/')
+
+app.get('/customers_list', function (request, response) {
+    DB.query('SELECT * from customers', response,
+        function (error, customers) {
+            if (error) {
+                // set content type
+                response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+                response.writeHead(500, { 'Content-Type': 'text/html' })
+                // send out a string
+                response.end(response.statusMessage)
+            } else {
+                let html = ''
+                html += 'Number of customers: ' + customers.rowCount + '<br>'
+                html += '<table>'
+                for (let i = 0; i < customers.rowCount; i++) {
+                    html += '<tr><td>' + customers.rows[i].customernumber + '</td><td>' + customers.rows[i].customername + '</td></tr>'
+                }
+                html += '</table>'
+
+                // use the page template of course to display the list
+                const pageData = {} // initialize empty object
+                pageData.title = 'Customers List-blabla.com'
+                pageData.description = 'Customers Number and Name'
+                pageData.author = 'The blabla.com team'
+                // send out the html table
+                pageData.content = html
+                response.render('master_template', pageData)
+            }
+        })
+})
+
+// ------------------------------------
+
+app.post('/customer_search_id', function (request, response) {
+    const id = request.body.id
+    console.log(id)
+    DB.queryParams('SELECT * from customers where customernumber =$1', [id], response,
+        // DB.query('SELECT * from customers where customernumber =' + id + '', response,
+        function (error, customers) {
+            if (error) {
+                // set content type
+                response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+                response.writeHead(500, { 'Content-Type': 'text/html' })
+                // send out a string
+                response.end(response.statusMessage)
+            } else {
+                let html = ''
+                html += 'Number of customers: ' + customers.rowCount + '<br>'
+                html += '<table>'
+                for (let i = 0; i < customers.rowCount; i++) {
+                    html += '<tr><td>' + customers.rows[i].customernumber + '</td><td>' + customers.rows[i].customername + '</td><td>' + customers.rows[i].contactlastname + '</td><td>' + customers.rows[i].contactfirstname + '</td><td>' + customers.rows[i].phone + '</td><td>' + customers.rows[i].addressline1 + '</td><td>' + customers.rows[i].addressline2 + '</td><td>' + customers.rows[i].city + '</td><td>' + customers.rows[i].state + '</td></tr>'
+                }
+                html += '</table>'
+
+                // use the page template of course to display the list
+                const pageData = {} // initialize empty object
+                pageData.title = 'Customers List-blabla.com'
+                pageData.description = 'Customers Number and Name'
+                pageData.author = 'The blabla.com team'
+                // send out the html table
+                pageData.content = html
+                response.render('master_template', pageData)
+            }
+        })
+})
 app.listen(8000, function () {
     console.log('server listening on port 8000')
 })
