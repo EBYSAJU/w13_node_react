@@ -1,8 +1,8 @@
 'use strict'
 const path = require('path')
-const logger = require('./src/logger')
+// const logger = require('./src/logger')
 const express = require('express')
-const { response } = require('express')
+// const { response } = require('express')
 const app = express()
 app.use(express.static('public_html'))
 
@@ -114,9 +114,8 @@ app.get('/seasons', function (req, res) {
 })
 // ------------------
 
-const DB = require('./src/logger/dao/')
-
 app.get('/customers_list', function (request, response) {
+    const DB = require('./src/logger/dao/')
     DB.query('SELECT * from customers', response,
         function (error, customers) {
             if (error) {
@@ -134,12 +133,7 @@ app.get('/customers_list', function (request, response) {
                 }
                 html += '</table>'
 
-                // use the page template of course to display the list
-                const pageData = {} // initialize empty object
-                pageData.title = 'Customers List-blabla.com'
-                pageData.description = 'Customers Number and Name'
-                pageData.author = 'The blabla.com team'
-                // send out the html table
+                const pageData = {}
                 pageData.content = html
                 response.render('master_template', pageData)
             }
@@ -151,6 +145,7 @@ app.get('/customers_list', function (request, response) {
 app.post('/customer_search_id', function (request, response) {
     const id = request.body.id
     console.log(id)
+    const DB = require('./src/logger/dao/')
     DB.queryParams('SELECT * from customers where customernumber =$1', [id], response,
         // DB.query('SELECT * from customers where customernumber =' + id + '', response,
         function (error, customers) {
@@ -180,6 +175,94 @@ app.post('/customer_search_id', function (request, response) {
             }
         })
 })
+// load object from file
+// const myStudent = require(path.join(__dirname, 'students.json'))
+// console.log(myStudent)
+// const fs = require('fs')
+// const myStudentString = JSON.stringify(myStudent)
+// console.log(myStudentString)
+// fs.writeFileSync(path.join(__dirname, 'stduents.json'), myStudentString)
+// for AJAX tests, returns the list of customers in a JSON string
+// test with http://localhost:8000/customers
+app.get('/customers', function (request, response) {
+    const DB = require('./src/logger/dao')
+    DB.query('SELECT * from customers', response, function (error, customers) {
+        if (error) {
+            console.log(error.message)
+
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const customersJSON = { msg: 'All Ok', customers: customers.rows }
+            const customersJSONString = JSON.stringify(customersJSON, null, 4)
+
+            response.statusMessage = 'All Ok'// custom HTTP response error message if required
+            // set content type
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(customersJSONString)
+        }
+    })
+})
+// delete 1 customer
+app.delete('/customers/:id', function (request, response) {
+    const id = request.params.id
+
+    const DB = require('./src/logger/dao')
+    DB.queryParams('DELETE from customers where customernumber=$1', [id], response, function (error, customers) {
+        if (error) {
+            console.log(error.message)
+
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else if (customers.rowCount >= 1) {
+            const JSONobj = { msg: 'ok customer deleted ' }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const JSONobj = { msg: 'customer not found,not deleted ' }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        }
+    })
+})
+app.get('/employees', function (request, response) {
+    const DB = require('./src/logger/dao')
+    DB.query('SELECT * from employees', response, function (error, employees) {
+        if (error) {
+            console.log(error.message)
+
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const employeesJSON = { msg: 'All Ok', employees: employees.rows }
+            const employeesJSONString = JSON.stringify(employeesJSON, null, 4)
+
+            response.statusMessage = 'All Ok'// custom HTTP response error message if required
+            // set content type
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(employeesJSONString)
+        }
+    })
+})
+
 app.listen(8000, function () {
     console.log('server listening on port 8000')
 })
