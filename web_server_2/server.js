@@ -36,6 +36,7 @@ app.get('/users/:id', function (request, response) {
     response.end(usersJSONString)
 })
 app.post('/users', function (request, response) {
+    console.log(request.body)
     /* const { datas } = request.body
     console.log(datas)
     const users = tableInfile.saveTable('users.json', +datas)
