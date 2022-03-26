@@ -31,7 +31,8 @@
 
     // get list of all customers with AJAX call using Fetch library *********************
     function getCustomers() {
-
+        document.getElementById("response_status").innerHTML = "waiting for server reply"
+        document.getElementById("response_data").innerHTML = ""
         fetch("http://localhost:8000/customers",
             {
                 method: 'GET',
@@ -80,6 +81,8 @@
     /////get employees function
     function getEmployees() {
 
+        document.getElementById("response_status").innerHTML = "waiting for server reply"
+        document.getElementById("response_data").innerHTML = ""
         fetch("http://localhost:8000/employees",
             {
                 method: 'GET',
@@ -175,6 +178,8 @@
 
     // DELETE 1 customer with AJAX call using Fetch library *********************
     function CustomerDelete() {
+        document.getElementById("response_status").innerHTML = "waiting for server reply"
+        document.getElementById("response_data").innerHTML = ""
 
         fetch("http://localhost:8000/customers/465",
             {

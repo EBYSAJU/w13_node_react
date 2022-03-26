@@ -44,7 +44,9 @@ app.use(express.urlencoded())
 
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json())
-
+// use cors
+const cors = require('cors')
+app.use(cors())
 // see /public_html/form_post.html
 // display form with http://localhost:8000/form_post.html
 app.post('/form_validate',
