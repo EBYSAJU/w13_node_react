@@ -36,35 +36,11 @@ app.get('/users/:id', function (request, response) {
     response.end(usersJSONString)
 })
 app.post('/users', function (request, response) {
-    console.log(request.body)
-    /* const { datas } = request.body
-    console.log(datas)
-    const users = tableInfile.saveTable('users.json', +datas)
-
-    const usersJSONString = JSON.stringify(users)
-
-    response.statusMessage = 'All Ok'// custom HTTP response error message if required
-
-    response.writeHead(200, { 'Content-Type': 'application/json' })
-
-    response.end(usersJSONString) */
-    const array = [{ id: 107, userName: 'mvachon', age: 45 }, { id: 111, userName: 'jcote', age: 67 }, { id: 112, userName: 'pmartineau', age: 89 }, { id: 117, userName: 'eby', age: 25 }]
-    const users = tableInfile.addRec('users.json', array)
-    const usersJSONString = JSON.stringify(users)
-
-    response.statusMessage = 'All Ok'// custom HTTP response error message if required
-
-    response.writeHead(200, { 'Content-Type': 'application/json' })
-
-    response.end(usersJSONString)
-})
-app.put('/users/:id', function (request, response) {
-    // const id = request.params.id
-    const array = {
-        id: 126,
-        userName: 'paul',
-        age: 23
-    }
+    // console.log(request.body)
+    const array = request.body
+    array.id = parseInt(array.id)
+    array.age = parseInt(array.age)
+    // const array = [{ id: 107, userName: 'mvachon', age: 45 }, { id: 111, userName: 'jcote', age: 67 }, { id: 112, userName: 'pmartineau', age: 89 }, { id: 117, userName: 'eby', age: 25 }]
     const users = tableInfile.addRec('users.json', array)
     const usersJSONString = JSON.stringify(users)
 
@@ -75,22 +51,35 @@ app.put('/users/:id', function (request, response) {
     response.end(usersJSONString)
 })
 // update
-// app.put('/users/:id', function (request, response) {
-//     // const id = request.params.id
-//     const array = {
-//         id: 100,
-//         userName: 'eby',
-//         age: 25
-//     }
-//     const users = tableInfile.updateRec('users.json', array)
-//     const usersJSONString = JSON.stringify(users)
+app.put('/users/:id', function (request, response) {
+    // const id = request.params.id
+    const array = request.body
+    array.id = parseInt(array.id)
+    array.age = parseInt(array.age)
 
-//     response.statusMessage = 'All Ok'// custom HTTP response error message if required
+    const users = tableInfile.updateRec('users.json', array)
+    const usersJSONString = JSON.stringify(users)
 
-//     response.writeHead(200, { 'Content-Type': 'application/json' })
+    response.statusMessage = 'All Ok'// custom HTTP response error message if required
 
-//     response.end(usersJSONString)
-// })
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+
+    response.end(usersJSONString)
+})
+app.delete('/users/:id', function (request, response) {
+    // const id = request.params.id
+    const array = request.body
+    array.id = parseInt(array.id)
+
+    const users = tableInfile.deleteRec('users.json', array.id)
+    const usersJSONString = JSON.stringify(users)
+
+    response.statusMessage = 'All Ok'// custom HTTP response error message if required
+
+    response.writeHead(200, { 'Content-Type': 'application/json' })
+
+    response.end(usersJSONString)
+})
 app.listen(8000, function () {
     console.log('server listening on port 8000')
 })

@@ -6,15 +6,16 @@ GET  http://localhost:8000/users/101 HTTP/1.1
 ###
 POST http://localhost:8000/users HTTP/1.1
 content-type: application/x-www-form-urlencoded
-id=123&username=eby&age=25
+
+id=130&username=rose&age=18
 ###
 
-PUT http://localhost:8000/users/123 HTTP/1.1
-//content-type: application/x-www-form-urlencoded
-//id=123&username=eby&age=25
+PUT http://localhost:8000/users/100 HTTP/1.1
+content-type: application/x-www-form-urlencoded
 
+id=100&username=dhawal&age=24
 
 
 
 ###
-DELETE http://localhost:8000/users/123
+DELETE http://localhost:8000/users/130
