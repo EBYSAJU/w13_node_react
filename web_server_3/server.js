@@ -85,21 +85,66 @@ app.put('/update', function (request, response) {
         }
     })
 })
-// app.put('/users/:id', function (request, response) {
-//     // const id = request.params.id
-//     const array = request.body
-//     array.id = parseInt(array.id)
-//     array.age = parseInt(array.age)
+// delete the specific data from the table
+app.delete('/offices/:code', function (request, response) {
+    const officecode = request.params.code
+    const DB = require('./src/dao')
+    DB.queryParams('DELETE FROM offices WHERE officecode =$1', [officecode], response, function (error, offices) {
+        if (error) {
+            console.log(error.message)
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else if (offices.rowCount >= 1) {
+            const JSONobj = { msg: 'Data Deleted Successfully ' }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const JSONobj = { msg: 'Input data NOt Found and Not Deleted ' }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.writeHead(404, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        }
+    })
+})
 
-//     // const users = tableInfile.updateRec('users.json', array)
-//     // const usersJSONString = JSON.stringify(users)
+/// /////////////////////////////////////////////////////////////////////
+app.post('/insert', function (request, response) {
+    console.log('body', request.body)
+    console.log('body', request.body.officecode)
+    const data = [request.body.addressline1, request.body.addressline2, request.body.city, request.body.state, request.body.country, request.body.postalcode, request.body.phone, request.body.territory, parseInt(request.body.officecode)]
+    console.log(data)
+    const DB = require('./src/dao')
+    DB.queryParams('INSERT INTO offices (officecode ,country , addressline1 ,addressline2 ,city, state , postalcode , phone  , territory) VALUES($2,$1,$3,$4,$5,$6,$7,$8,$9)', [request.body.country, request.body.officecode, request.body.addressline1, request.body.addressline2, request.body.city, request.body.state, request.body.postalcode, request.body.phone, request.body.territory], response, function (error, offices) {
+        // addressline1 = ? , addressline2 = ? , city = ? , state = ? ,, postalcode = ? , phone = ? , territory = ?
+        if (error) {
+            console.log(error.message)
 
-//     response.statusMessage = 'All Ok'// custom HTTP response error message if required
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const officesJSON = { msg: 'All Ok', offices: offices.rows }
+            const officesJSONString = JSON.stringify(officesJSON, null, 4)
 
-//     response.writeHead(200, { 'Content-Type': 'application/json' })
+            response.statusMessage = 'All Ok'// custom HTTP response error message if required
+            // set content type
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(officesJSONString)
+        }
+    })
+})
 
-//     // response.end(usersJSONString)
-// })
 app.listen(8000, function () {
     console.log('server listening on port 8000')
 })
