@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+
+<head>
+    <title>offices</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 150px;
+            text-align: right;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    Server message: <b><span id="response_status">enter an id</span></b></span><br>
+
+
+    <input type="text" id="officeId" onchange="getOfficesId()"><br>
+    <form>
+
+        <label>officecode </label>
+        <input id="o_id" type="text" /><br>
+
+
+        <label>AddressLine1</label>
+        <input id="address_1" type="text" /><br>
+
+        <label>AddressLine2</label>
+        <input id="address_2" type="text" /><br>
+        <label>city</label>
+        <input id="city" type="text" /><br>
+        <label>state</label>
+        <input id="state" type="text" /><br>
+        <label>country</label>
+        <input id="country" type="text" /><br>
+        <label>postalcode</label>
+        <input id="pc" type="text" /><br>
+        <label>Phone</label>
+        <input id="phone" type="text" /><br>
+        <label>territory</label>
+        <input id="territory" type="text" /><br>
+    </form>
+    <button onclick="save()">save</button>
+    <button onclick="">delete</button>
+    <button onclick="">clear form to add a new office</button><br><br>
+    <button onclick="getOffices()">Get all offices</button><br>
+    Number of offices: <div id="count_data"> None</div><br>
+    Response Data or other content: <div id="response_data"> None</div>
+
+
+
+
+</body>
+<script>
+    function getOfficesId() {
+        document.getElementById("response_status").innerHTML = "waiting for server reply"
+
+        let id = document.getElementById("officeId");
+        console.log("reached here ", id.value)
+        fetch("http://localhost:8000/offices/" + id.value,
+            {
+                method: 'GET',
+            }
+        )
+            .then((response) => {
+                //executes after we get a response from the server
+                console.log(response)//show the whole FETCH response object on console
+                document.getElementById("response_status").innerHTML = response.status + ' ' + response.statusText
+                if (!response.ok) {
+                    // handle errors, response code other than 200 because
+                    return {} //empty object, no data
+                } else {
+                    //ok code 200, convert data in FETCH response to JSON data
+                    return response.json()
+                }
+                //execute second .then when done
+            })
+            .then(
+                //executes after the first .then
+                (data) => {// catch the data returned by first .then
+                    //check for not empty data object
+                    if (Object.keys(data).length !== 0) {
+                        // execute only when code is 200
+                        let offices = data.offices;
+                        //TO DO display all customters in a table
+
+                        document.getElementById("o_id").value = offices[0].officecode
+                        document.getElementById("address_1").value = offices[0].addressline1
+                        document.getElementById("address_2").value = offices[0].addressline2
+                        document.getElementById("city").value = offices[0].city
+                        document.getElementById("state").value = offices[0].state
+                        document.getElementById("country").value = offices[0].country
+
+                        document.getElementById("pc").value = offices[0].postalcode
+                        document.getElementById("territory").value = offices[0].territory
+                        document.getElementById("phone").value = offices[0].phone
+                        // document.getElementById("response_data").innerHTML = html
+
+
+
+                        console.log(offices)// show all on client console
+                    }
+                },
+
+                (error) => {
+                    // only NO RESPONSE URL errors will trigger this code
+                    document.getElementById("response_status").innerHTML = "AJAX error: URL wrong or unreachable, see console"
+                }
+            )
+    }// end of getCustomers function
+    function getOffices() {
+        document.getElementById("response_status").innerHTML = "waiting for server reply"
+        document.getElementById("response_data").innerHTML = ""
+        fetch("http://localhost:8000/offices",
+            {
+                method: 'GET',
+            }
+        )
+            .then((response) => {
+                //executes after we get a response from the server
+                console.log(response)//show the whole FETCH response object on console
+                document.getElementById("response_status").innerHTML = response.status + ' ' + response.statusText
+                if (!response.ok) {
+                    // handle errors, response code other than 200 because
+                    return {} //empty object, no data
+                } else {
+                    //ok code 200, convert data in FETCH response to JSON data
+                    return response.json()
+                }
+                //execute second .then when done
+            })
+            .then(
+                //executes after the first .then
+                (data) => {// catch the data returned by first .then
+                    //check for not empty data object
+                    if (Object.keys(data).length !== 0) {
+                        // execute only when code is 200
+                        let offices = data.offices;
+                        console.log(data.offices)
+                        //TO DO display all customters in a table
+                        let html = ''
+                        html += '<table>'
+                        for (let i = 0; i < offices.length; i++) {
+                            html += '<tr><td>' + offices[i].officecode + '</td><td>' + offices[i].city + '</td><td>' + offices[i].phone + '</td><td>' + offices[i].addressline1 + '</td><td>' + offices[i].addressline2 + '</td><td>' + offices[i].state + '</td><td>' + offices[i].country + '</td><td>' + offices[i].postalcode + '</td><td>' + offices[i].territory + '</td></tr>'
+                        }
+                        html += '</table>'
+                        console.log(html)
+
+                        document.getElementById("response_data").innerHTML = html
+                        document.getElementById("count_data").innerHTML = offices.length
+                        console.log(offices)// show all on client console
+                    }
+                },
+
+                (error) => {
+                    // only NO RESPONSE URL errors will trigger this code
+                    document.getElementById("response_status").innerHTML = "AJAX error: URL wrong or unreachable, see console"
+                }
+            )
+    }// end of getCustomers function
+
+    function save() {
+
+        let userData = {
+            username: "toto",
+            password: "12345678"
+        }
+
+        let id = document.getElementById("o_id");
+        let addressline1 = document.getElementById("address_1").value
+        let addressline2 = document.getElementById("address_2").value
+        let city = document.getElementById("city").value
+        let state = document.getElementById("state").value
+        let country = document.getElementById("country").value
+
+        let postalcode = document.getElementById("pc").value
+        let territory = document.getElementById("territory").value
+        let phone = document.getElementById("phone").value
+
+        console.log("address", addressline1)
+        console.log("here", id)
+        console.log("reached here ", id.value)
+        let updateData = {
+            officecode: id.value,
+            addressline1: addressline1,
+            addressline2: addressline2,
+            city: city,
+            state: state,
+            country: country,
+            postalcode: postalcode,
+            territory: territory,
+            phone: phone
+
+
+        }
+        console.log("updateData", updateData)
+
+
+
+
+        fetch("http://localhost:8000/update",
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(updateData)
+            }
+        )
+
+            .then((response) => {
+                // execute after we get the response from the server
+                console.log(response)//show the whole FETCH response object on console
+                document.getElementById("response_status").innerHTML = response.status + ' ' + response.statusText
+                if (!response.ok) {
+                    // handle response code other than 200 because
+                    return ""
+                } else {
+                    //here server responds with text/html, get the text
+                    return response.text()
+                }
+                //execute second .then when done
+            })
+            .then(
+                //executes after the first .then is complete
+                (server_text) => {// catch what is returned from first .then
+                    // show text reply on page
+                    document.getElementById("response_data").innerHTML = server_text
+                },
+
+                (error) => {
+                    // only NO RESPONSE URL errors will trigger this code
+                    document.getElementById("response_status").innerHTML = "AJAX error: URL wrong or unreachable, see console"
+                }
+            )
+    }//end of login function
+</script>
+
+</html>
