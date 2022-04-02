@@ -15,17 +15,34 @@ class Offices extends React.Component {
             "territory":""
 
 
-        }
+
 
 
     }
+}
+componentDidMount(){
+    this.getOffice(3)
+}
+componentWillUnmount(){
+    alert("offices component will be removed from DOM ")
+}
     handleChange=(event)=>{
+
         this.setState({[event.target.name]:event.target.value})
 
+       // onChange={()=>this.getOffice(this.state.officecode)}
+
      }
+       //code =this.state.officecode
+    // twofunctions = code =>{
+       // this.handleChange()
+       // this.getOffice(code)
+
+
+     //}
 clearForm=()=>{
     this.setState({
-        "isLoaded":false,
+
         "officecode":"",
         "city":"",
         "country":"",
@@ -35,12 +52,14 @@ clearForm=()=>{
         "phone":"",
         "postalcode":"",
         "territory":"",
-        "data":""
+        "data":"",
+        "code":""
     }
     )
 }
 
      saveOffice=()=>{
+
 
 let country = this.state.country
 let officecode = this.state.officecode
@@ -75,7 +94,7 @@ console.log("data",updateData)
         .then((response) => {
             // execute after we get the response from the server
             console.log(response)//show the whole FETCH response object on console
-            document.getElementById("response_status").innerHTML = response.status + ' ' + response.statusText
+            document.getElementById("status").innerHTML = response.status + ' ' + response.statusText+'  data has been updated'
             if (!response.ok) {
                 // handle response code other than 200 because
                 return ""
@@ -94,7 +113,7 @@ console.log("data",updateData)
 
             (error) => {
                 // only NO RESPONSE URL errors will trigger this code
-                document.getElementById("response_status").innerHTML = "AJAX error: URL wrong or unreachable, see console"
+                document.getElementById("status").innerHTML = "AJAX error: URL wrong or unreachable, see console"
             }
         )
 
@@ -114,7 +133,7 @@ console.log("data",updateData)
             .then((response) => {
                 //executes after we get a response from the server
                 console.log(response)//show the whole FETCH response object on console
-                document.getElementById("status").innerHTML = response.status + ' ' + response.statusText
+              //  document.getElementById("status").innerHTML = response.status + ' ' + response.statusText
                 if (!response.ok) {
                     // handle errors, response code other than 200 because
                     return {} //empty object, no data
@@ -190,10 +209,12 @@ server status<div id="status">click on button above</div>
             {/*officeCode: {this.state.officecode} <br/>
             city: {this.state.city} <br/>
             country: {this.state.country}
-            <br/>
-    <button onClick={()=>this.getOffice(3)}>Get office no.3</button>*/}
+            <br/>*/}
+            <input type="text"name="code"id=""value={this.state.code}onChange={(event)=>this.handleChange(event)} />
+    <button onClick={()=>this.getOffice(this.state.code)}>Get selected offices</button>
+    server status<div id="status">click on button above</div>
     <form>
-OfficeCode:<input type="text"name="officecode"id=""value={this.state.officecode}onChange={(event)=>this.handleChange(event)}/><br/>
+OfficeCode:<input type="text"name="officecode"id=""value={this.state.officecode}onChange={(event)=>this.handleChange(event)} /><br/>
 AddressLine1:<input type="text"name="addressline1"id=""value={this.state.addressline1}onChange={(event)=>this.handleChange(event)}/><br/>
 AddressLine2:<input type="text"name="addressline2"id=""value={this.state.addressline2}onChange={(event)=>this.handleChange(event)}/><br/>
 Country:<input type='text'name='country'id=""value={this.state.country}onChange={(event)=>this.handleChange(event)}/><br/>
@@ -204,7 +225,7 @@ PostalCode:<input type='text'name='postalcode'id=""value={this.state.postalcode}
 Territory:<input type='text'name='territory'id=""value={this.state.territory}onChange={(event)=>this.handleChange(event)}/><br/>
 
 
-this.setState("data":[{this.state.officecode},{this.state.addressline1},{this.state.addressline2},{this.state.country},{this.state.city},{this.state.state},{this.state.phone},{this.state.postalcode},{this.state.territory}])
+{/*this.setState("data":[{this.state.officecode},{this.state.addressline1},{this.state.addressline2},{this.state.country},{this.state.city},{this.state.state},{this.state.phone},{this.state.postalcode},{this.state.territory}])*/}
 
 
  <button type='button' onClick={()=>this.saveOffice()}>save</button>

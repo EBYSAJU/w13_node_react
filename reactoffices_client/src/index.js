@@ -4,18 +4,53 @@ import Footer from './Footer'
 import Header from './Header'
 import Nav from './Nav'
 import Offices from './Offices'
+class Page extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state={noOffice:false}
+    }
 
+noOffice=()=>{
+
+    this.setState({noOffice:true})
+}
+render(){
+    if(this.state.noOffice){
+        return(
+            <div>
+                <Header companyName="classicmodels.com"/>
+                <Nav/>
+    <button  onClick={()=>this.noOffice()}>remove office component</button>
+    <Footer authorName="Eby Saju"/>
+            </div>
+
+        )
+    }
+    else{
+        return(
+            <div>
+                    <Header companyName="classicmodels.com"/>
+                <Nav/>
+                <Offices/>
+    <button  onClick={()=>this.noOffice()}>remove office component</button>
+    <Footer authorName="Eby Saju"/>
+
+            </div>
+
+        )
+    }
+}
+
+}
 
 
 
 ReactDOM.render(
   <React.StrictMode>
-   <div>
-                <Header companyName="classicmodels.com"/>
-                <Nav/>
-                <Offices/>
-            <Footer authorName="Eby Saju"/>
-            </div>
+
+
+                <Page/>
+
   </React.StrictMode>,
   document.getElementById('root')
 );
