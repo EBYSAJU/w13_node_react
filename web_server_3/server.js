@@ -56,7 +56,7 @@ app.get('/offices', function (request, response) {
         }
     })
 })
-app.put('/update', function (request, response) {
+app.put('/offices/:code', function (request, response) {
     console.log('reached here')
     console.log('body', request.body)
 
@@ -118,7 +118,8 @@ app.put('/offices/:code', function (request, response) {
 })
 // delete the specific data from the table
 app.delete('/offices/:code', function (request, response) {
-    const officecode = request.params.code
+    const officecode = parseInt(request.body.officecode)
+    console.log(officecode)
     const DB = require('./src/dao')
     DB.queryParams('DELETE FROM offices WHERE officecode =$1', [officecode], response, function (error, offices) {
         if (error) {
@@ -146,7 +147,7 @@ app.delete('/offices/:code', function (request, response) {
 })
 
 /// /////////////////////////////////////////////////////////////////////
-app.post('/insert', function (request, response) {
+app.post('/offices', function (request, response) {
     console.log('body', request.body)
     console.log('body', request.body.officecode)
     const data = [request.body.addressline1, request.body.addressline2, request.body.city, request.body.state, request.body.country, request.body.postalcode, request.body.phone, request.body.territory, parseInt(request.body.officecode)]
@@ -175,7 +176,11 @@ app.post('/insert', function (request, response) {
         }
     })
 })
-
+app.get('/', function (req, res) {
+    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.write('Welcome to MicroService')
+    res.end()
+})
 app.listen(8000, function () {
     console.log('server listening on port 8000')
 })
