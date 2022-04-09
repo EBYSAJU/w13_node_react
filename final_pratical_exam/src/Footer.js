@@ -4,7 +4,7 @@ class Footer extends React.Component {
 
 render() {
     return(
-        <footer ClassName={styles.footer}><strong>{this.props.authorName}</strong></footer>
+        <footer className={styles.footer}><strong>{this.props.authorName}</strong></footer>
     )
 
 }

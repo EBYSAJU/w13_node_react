@@ -32,6 +32,31 @@ app.get('/offices/:code', function (request, response) {
         }
     })
 })
+app.get('/offices/:code/employees', function (request, response) {
+    const officecode = request.params.code
+    const DB = require('./src/dao')
+    DB.queryParams('SELECT * from employees where officecode =$1', [officecode], response, function (error, employees) {
+        if (error) {
+            console.log(error.message)
+
+            const JSONobj = { msg: 'Database query error ' + error.message }
+            const JSONString = JSON.stringify(JSONobj, null, 4)
+            response.statusMessage = 'Database query error ' + error.code + ' ' + error.message
+            response.writeHead(500, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(JSONString)
+        } else {
+            const employeesJSON = { msg: 'All Ok', employees: employees.rows }
+            const employeesJSONString = JSON.stringify(employeesJSON, null, 4)
+
+            response.statusMessage = 'All Ok'// custom HTTP response error message if required
+            // set content type
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            // send out a JSON string
+            response.end(employeesJSONString)
+        }
+    })
+})
 app.get('/offices', function (request, response) {
     const DB = require('./src/dao')
     DB.query('SELECT * from offices', response, function (error, offices) {

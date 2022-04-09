@@ -4,6 +4,7 @@ import Footer from './Footer'
 import Header from './Header'
 import Nav from './Nav'
 import Offices from './Offices'
+import Employees from './Employees'
 class Page extends React.Component {
     constructor(props) {
         super(props)
@@ -30,8 +31,11 @@ render(){
         return(
             <div>
                     <Header companyName="classicmodels.com"/>
+
                 <Nav/>
                 <Offices/>
+
+
     <button  onClick={()=>this.noOffice()}>remove office component</button>
     <Footer authorName="Eby Saju"/>
 

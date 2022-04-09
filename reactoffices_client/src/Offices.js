@@ -1,5 +1,7 @@
 import React from "react"
 import styles from './Office.css'
+import Employees from './Employees'
+
 class Offices extends React.Component {
     constructor(props){
         super(props)
@@ -23,6 +25,8 @@ class Offices extends React.Component {
     }
 
 }
+
+
 
     handleChange=(event)=>{
 
@@ -326,12 +330,13 @@ console.log("officesbyid",code)
             )
 
     }
+
 render(){
 if(!this.state.isLoaded){
     return (
 <div>
 
-<h1>offices from classicmodels database</h1> <br/>
+
 <button onClick={()=>this.getOffice(3)}>Get office no.3</button>
 server status<div id="status">click on button above</div>
 
@@ -343,11 +348,9 @@ server status<div id="status">click on button above</div>
 
     return (
         <div>
+        <div>
             <h1>offices from classicmodels database</h1> <br/>
-            {/*officeCode: {this.state.officecode} <br/>
-            city: {this.state.city} <br/>
-            country: {this.state.country}
-            <br/>*/}
+
             <input type="text"name="code" id=""value={this.state.code} onChange={(event)=>this.handleChange(event)} />
     <button onClick={()=>this.getOffice(this.state.code)}>Get selected offices</button>
     server status<div id="status">click on button above</div>
@@ -365,15 +368,21 @@ PostalCode:<input type='text'name='postalcode'id=""value={this.state.postalcode}
 Territory:<input type='text'name='territory'id=""value={this.state.territory}onChange={(event)=>this.handleChange(event)}/><br/>
 
 
-{/*this.setState("data":[{this.state.officecode},{this.state.addressline1},{this.state.addressline2},{this.state.country},{this.state.city},{this.state.state},{this.state.phone},{this.state.postalcode},{this.state.territory}])*/}
-
-
  <button type='button' onClick={()=>this.saveOffice()}>save</button>
  <button type='button' onClick={()=>this.delete()}>delete</button>
  <button type='button' onClick={()=>this.clearForm()}>clearForm</button>
 </form>
 <button type='button' onClick={()=>this.getAllOffices()}>Get Offices</button>
-<div ClassName={styles.table} id="response_data"> None</div>
+</div>
+<div ClassName={styles.div} id="response_data"> None</div>
+{console.log('hello',this.state.officecode)}
+<div ClassName={styles.table}>
+<Employees officeCode={this.state.officecode} />
+</div>
+
+
+
+
         </div>
     )
 }
